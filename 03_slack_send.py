@@ -1,6 +1,8 @@
-import json, urllib.request
+import os, json, urllib.request
 
-SLACK_WEBHOOK_URL = os.environ["SLACK_WEBHOOK_URL"]  # 直書きしない
+WEBHOOK_URL = os.environ.get("SLACK_WEBHOOK_URL")
+
+reporter = os.environ.get("TEST_REPORTER") or "unknown"
 
 with open("report.json", encoding="utf-8") as f:
   d = json.load(f)
@@ -12,7 +14,7 @@ failed = sum(x["result"] == "fail" for x in r)
 
 text = (
   f"{d['test_name']}\n"
-  f"担当者: 齊藤僚太\n"
+  f"担当者: {reporter}\n"
   f"合計: {total}  PASS: {passed}  FAIL: {failed}"
 )
 
