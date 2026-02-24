@@ -1,0 +1,58 @@
+name: Generate and Notify Report
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+
+  env:
+    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Generate report.json from MagicPod
+        env:
+        MAGICPOD_TOKEN: ${{ secrets.MAGICPOD_TOKEN }}
+        run: |
+          python 01_magicpod_report.py \
+          --org VeriServe \
+          --project MobileTraining \
+          --token "$MAGICPOD_TOKEN"
+          --out report.json
+          --test-case-numbers "736,737,738" \
+          --os ios \
+          --device-type simulator \
+          --version "15.5" \
+          --model "iPhone 12" \
+          --app-type app_file \
+          --app-file-number "75"
+
+      - name: Run xlsx conversion script
+        run: |
+          python scripts/02_xlsx_conversion.py report.json
+
+      - name: Run Slack notification script
+        run: |
+          python scripts/03_slack_send.py
+
+      - name: Upload xlsx artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: xlsx-report
+          path: |
+            *.xlsx
