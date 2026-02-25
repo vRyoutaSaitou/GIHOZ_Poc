@@ -31,6 +31,8 @@ jobs:
           --project WebTraining \
           --token "$MAGICPOD_TOKEN" \
           --batch-run-number 233 \
+          --errors \
+          --note \
           --out report.json \
 
       - name: Run xlsx conversion script
