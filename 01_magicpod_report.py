@@ -50,7 +50,7 @@ def build_batch_run_url(org: str, project: str, batch_run_number: int) -> str:
   tepl = os.environ.get("MAGICPOD_BATCHRUN_URL_TEMPLATE", "")
   if not tepl:
     return ""
-    return temp.format(org=org, project, batch_run_number=batch_run_number)
+    return tmpl.format(org=org, project=project, batch_run_number=batch_run_number)
 
 def main():
   ap = argparse.ArgumentParser()
