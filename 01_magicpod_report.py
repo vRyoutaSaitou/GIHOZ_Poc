@@ -28,7 +28,7 @@ def status_to_result(status: str) -> str:
     return "pass"
     return "fail"
 
-def post_batch_run(org: str, project: str, token: str, batch_run_number: int, *, errors: bool = False, note: bool = False) -> dict:
+def get_batch_run(org: str, project: str, token: str, batch_run_number: int, *, errors: bool = False, note: bool = False) -> dict:
   url = f"https://app.magicpod.com/api/v1.0/{org}/{project}/batch-run/"
   headers = {
     "accept": "application/json",
