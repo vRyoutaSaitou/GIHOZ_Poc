@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -45,6 +46,12 @@ def get_batch_run(org: str, project: str, token: str, batch_run_number: int, *, 
   r.raise_for_status()
   return r.json()
 
+def build_batch_run_url(org: str, project: str, batch_run_number: int) -> str:
+  tepl = os.environ.get("MAGICPOD_BATCHRUN_URL_TEMPLATE", "")
+  if not tepl:
+    return ""
+    return temp.format(org=org, project, batch_run_number=batch_run_number)
+
 def main():
   ap = argparse.ArgumentParser()
   ap.add_argument("--org", required=True)
@@ -70,6 +77,8 @@ def main():
   test_id = f"magicpod_batch_run_{data.get('batch_run_number')}"
 
   officer_default = args.test_officer if args.test_officer else test_admin
+
+  batch_run_url = build_batch_run_url(args.org, args.project, args.batch_run_number)
 
   #処理失敗時
   test_results = []
@@ -105,6 +114,7 @@ def main():
     "test_admin": test_admin,
     "status": status,
     "batch_run_number": data.get("batch_run_number"),
+    "batch_run_url": batch_run_url,
     "test_results": test_results,
   }
 
