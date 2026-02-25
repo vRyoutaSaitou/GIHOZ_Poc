@@ -85,11 +85,7 @@ def main():
 
   officer_default = args.test_officer if args.test_officer else test_admin
 
-  batch_run_url = build_batch_run_url(
-    args.org,
-    args.project,
-    data.get("batch_run_number")
-  )
+  batch_run_url = data.get("url", "")
 
   #処理失敗時
   test_results = []
