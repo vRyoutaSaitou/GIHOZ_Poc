@@ -30,7 +30,7 @@ jobs:
           --org VeriServe \
           --project WebTraining \
           --token "$MAGICPOD_TOKEN" \
-          --batch-run-number 232 \
+          --batch-run-number 233 \
           --out report.json \
 
       - name: Run xlsx conversion script
