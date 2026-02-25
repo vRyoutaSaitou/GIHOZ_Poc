@@ -50,7 +50,7 @@ jobs:
           print('total=', len(r))
           print('pass=', sum(str(x.get('result','')).lower()=='pass' for x in r))
           print('fail=', sum(str(x.get('result','')).lower()=='fail' for x in r))
-          print('first3=', r[:3]
+          print('first3=', r[:3])
           PY
 
       - name: Run Slack notification script
