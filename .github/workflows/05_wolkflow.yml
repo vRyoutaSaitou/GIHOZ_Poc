@@ -39,6 +39,20 @@ jobs:
         run: |
           python 02_xlsx_conversion.py report.json
 
+      - name: Debug report.json (before slack)
+        run: |
+          python - << 'PY'
+          import json
+          d=json.load(open('report.json',encoding='utf-8'))
+          r=d.get('test_results',[])
+          print('test_name=', d.get('test_name'))
+          print('status=', d.get('status'))
+          print('total=', len(r))
+          print('pass=', sum(str(x.get('result','')).lower()=='pass' for x in r))
+          print('fail=', sum(str(x.get('result','')).lower()=='fail' for x in r))
+          print('first3=', r[:3]
+          PY
+
       - name: Run Slack notification script
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK }}
