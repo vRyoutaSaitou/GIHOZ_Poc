@@ -29,7 +29,7 @@ sheet.title = "テスト結果"
 
 records = data["test_results"]
 
-batch_run _url = data.get("batch_run_url", "")
+batch_run_url = data.get("batch_run_url", "")
 
 header = ["test_case_name", "test_officer", "test_date", "result", "remark", "batch_run_url"]
 
