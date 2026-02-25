@@ -29,14 +29,23 @@ sheet.title = "テスト結果"
 
 records = data["test_results"]
 
-header = ["test_case_name", "test_officer", "test_date", "result", "remark"]
+batch_run _url = data.get("batch_run_url", "")
+
+header = ["test_case_name", "test_officer", "test_date", "result", "remark", "batch_run_url"]
 
 sheet.append(header)
 
 print("データ書き込み中")
 # データ行
-for record in data["test_results"]:
-  row = [record.get(key, "") for key in header]
+for record in records:
+  row = [
+    record.get("test_case_name", ""),
+    record.get("test_officer", ""),
+    record.get("test_date", ""),
+    record.get("result", ""),
+    record.get("remark", ""),
+    batch_run_url,
+  ]
   sheet.append(row)
 
 print("データ書き込み完了")
