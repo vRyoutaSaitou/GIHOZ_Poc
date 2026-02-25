@@ -42,6 +42,7 @@ jobs:
       - name: Run Slack notification script
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK }}
+          MAGICPOD_BATCHRUN_URL_TEMPLATE: "https://app.magicpod.com/VeriServe/WebTraining/batch-run/233/pattern-index/0/1/"
           TEST_REPORTER: "齊藤僚太"
         run: |
           python 03_slack_send.py
