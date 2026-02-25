@@ -59,10 +59,10 @@ def main():
 
   args = ap.parse_args()
 
- data = get_batch_run(
-   args.org, args.project, args.token, args.batch_run_number,
-   errors=args.errors, note=args.note
- )
+   data = get_batch_run(
+     args.org, args.project, args.token, args.batch_run_number,
+     errors=args.errors, note=args.note
+   )
 
   status = data.get("status")
   test_admin = data.get("executed_by", "")
