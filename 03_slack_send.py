@@ -8,7 +8,7 @@ reporter = os.environ.get("TEST_REPORTER") or "unknown"
 
 try:
   with open("report.json", encoding="utf-8") as f:
-  d = json.load(f)
+    d = json.load(f)
 except FileNotFoundError:
   raise RuntimeError("report.json not found")
 except json.JSONDecodeError as e:
