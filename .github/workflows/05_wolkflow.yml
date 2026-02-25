@@ -8,9 +8,6 @@ jobs:
   generate-report:
     runs-on: ubuntu-latest
 
-  env:
-    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -25,30 +22,28 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Generate report.json from MagicPod
+      - name: Generate report.json from MagicPod (Get only)
         env:
-        MAGICPOD_TOKEN: ${{ secrets.MAGICPOD_TOKEN }}
+          MAGICPOD_TOKEN: ${{ secrets.MAGICPOD_TOKEN }}
         run: |
           python 01_magicpod_report.py \
           --org VeriServe \
-          --project MobileTraining \
-          --token "$MAGICPOD_TOKEN"
-          --out report.json
-          --test-case-numbers "736,737,738" \
-          --os ios \
-          --device-type simulator \
-          --version "15.5" \
-          --model "iPhone 12" \
-          --app-type app_file \
-          --app-file-number "75"
+          --project WebTraining \
+          --token "$MAGICPOD_TOKEN" \
+          --batch-run-number 232 \
+          --out report.json \
 
       - name: Run xlsx conversion script
         run: |
-          python scripts/02_xlsx_conversion.py report.json
+          python 02_xlsx_conversion.py report.json
 
       - name: Run Slack notification script
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK }}
+          TEST_REPORTER: "齊藤僚太"
         run: |
-          python scripts/03_slack_send.py
+          python 03_slack_send.py
+
 
       - name: Upload xlsx artifact
         uses: actions/upload-artifact@v5
