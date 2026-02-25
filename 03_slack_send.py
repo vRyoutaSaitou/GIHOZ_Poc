@@ -37,7 +37,7 @@ req = urllib.request.Request(
 )
 try:
   with urllib.request.urlopen(req, timeout=30) as resp:
-  resp.read()
+    resp.read()
 except urllib.error.HTTPError as e:
   body = e.read().decode("utf-8", errors="replace")
   raise RuntimeError(f"Slack webhook HTTPError: {e.code} {e.reason} body={body}")
