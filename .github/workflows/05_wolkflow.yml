@@ -30,7 +30,7 @@ jobs:
           --org VeriServe \
           --project WebTraining \
           --token "$MAGICPOD_TOKEN" \
-          --batch-run-number 233 \
+          --batch-run-number 232 \
           --errors \
           --note \
           --out report.json \
