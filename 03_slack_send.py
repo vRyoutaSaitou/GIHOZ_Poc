@@ -29,7 +29,7 @@ batch_run_url = d.get("batch_run_url", "")
 text = (
   f"{d['test_name']}\n"
   f"担当者: {reporter}\n"
-  f"合計: {total}  PASS: {passed}  FAIL: {failed}"
+  f"合計: {total}  PASS: {passed}  FAIL: {failed}\n"
   f"詳細 (MagicPod) : {batch_run_url if batch_run_url else 'URL未設定'}"
 )
 
