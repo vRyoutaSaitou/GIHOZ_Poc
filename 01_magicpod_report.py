@@ -24,9 +24,16 @@ def to_jst_name(iso_z: str) -> str:
   return dt_jst.strftime("テスト実行結果_%Y%m%d_%H%M%S")
 
 def status_to_result(status: str) -> str:
+  s = (status or "").strip().lower()
   # MagicPod: succeeded/failed/canceld/running
-  if status == "succeeded":
+  if s == "succeeded":
     return "pass"
+  if s == "failed":
+    return "fail"
+  if s == "canceled":
+    return "fail"
+  if s == "running":
+    return "fail"
     return "fail"
 
 def get_batch_run(org: str, project: str, token: str, batch_run_number: int, *, errors: bool = False, note: bool = False) -> dict:
