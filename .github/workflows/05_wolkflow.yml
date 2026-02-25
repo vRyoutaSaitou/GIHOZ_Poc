@@ -67,4 +67,5 @@ jobs:
         with:
           name: xlsx-report
           path: |
+            report.json
             *.xlsx
