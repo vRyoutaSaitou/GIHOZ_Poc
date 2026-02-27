@@ -37,7 +37,7 @@ jobs:
 
       - name: Run xlsx conversion script
         run: |
-          python 02_xlsx_conversion.py report.json
+          python 03_xlsx_conversion.py report.json
 
       - name: Debug report.json (before slack)
         run: |
@@ -59,7 +59,7 @@ jobs:
           MAGICPOD_BATCHRUN_URL_TEMPLATE: "https://app.magicpod.com/VeriServe/WebTraining/batch-run/233/pattern-index/0/1/"
           TEST_REPORTER: "齊藤僚太"
         run: |
-          python 03_slack_send.py
+          python 04_slack_send.py
 
 
       - name: Upload xlsx artifact
