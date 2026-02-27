@@ -73,7 +73,7 @@ def pick_latest_batch_run_number(list_json: dict) -> int:
   runs = list_json.get("batch_runs") or []
   if not runs:
     raise RuntimeError("No batch_runs found")
-    numbers = [x.get("batch_run_number") for x in runs if isinstance(x.get("batch_run_number"), int)
+    numbers = [x.get("batch_run_number") for x in runs if isinstance(x.get("batch_run_number"), int)]
   if not numbers
     raise RuntimeError("batch_run_number not found in batch_runs")
     return max(numbers)
