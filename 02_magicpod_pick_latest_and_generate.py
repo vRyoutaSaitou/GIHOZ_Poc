@@ -15,7 +15,7 @@ def list_batch_runs(org: str, project: str, token: str, *, count: int = 20) -> d
 
   r=requests.get(url, headers=headers, params=params, timeout=60)
   r.raise_for_status()
-  return r.json
+  return r.json()
 
 def pick_latest_batch_run_number(list_json: dict) -> int:
   runs = list_json.get("batch_runs") or []
@@ -24,8 +24,8 @@ def pick_latest_batch_run_number(list_json: dict) -> int:
   runs = [x for x in runs if x.get("branch_name") == "main"]
   runs = [x for x in runs if x.get("test_setting_name") == "PoC演習_Chrome"]
 
-  rums = [x.get("batch_run_number") for x in runs if isinstance(x.get("batch_run_number"), int)]
-  if not rums:
+  nums = [x.get("batch_run_number") for x in runs if isinstance(x.get("batch_run_number"), int)]
+  if not nums:
     return None
 
   return max(nums)
@@ -49,13 +49,13 @@ def main():
   lst = list_batch_runs(args.org, args.project, args.token, count=args.count)
   latest = pick_latest_batch_run_number(lst)
 
-  print("Filter: branch_name=main, test_setting_name=PoC演習_Chrome", fluch=True)
+  print("Filter: branch_name=main, test_setting_name=PoC演習_Chrome", flush=True)
   print("Picked latest batch_run_number:", latest, flush=True)
 
   if latest is None:
     raise RuntimeError("latest batch_run_number not found (try increasing --count or check filter conditions)")
 
-  cmd =[
+  cmd = [
     sys.executable, "01_magicpod_report.py",
     "--org", args.org,
     "--project", args.project,
