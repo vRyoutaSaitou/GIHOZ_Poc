@@ -93,7 +93,7 @@ def main():
 
   args = ap.parse_args()
 
-  if args.batch_run_numbers is not None:
+  if args.batch_run_number is not None:
     target_number = args.batch_run_number
   else:
     if not args.latest:
