@@ -22,19 +22,6 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Generate report.json from MagicPod (Get only)
-        env:
-          MAGICPOD_TOKEN: ${{ secrets.MAGICPOD_TOKEN }}
-        run: |
-          python 01_magicpod_report.py \
-          --org VeriServe \
-          --project WebTraining \
-          --token "$MAGICPOD_TOKEN" \
-          --latest \
-          --errors \
-          --note \
-          --out report.json \
-
       - name: Generate report.json from MagicPod (latest -> 01)
         env:
           MAGICPOD_TOKEN: ${{ secrets.MAGICPOD_TOKEN }}
