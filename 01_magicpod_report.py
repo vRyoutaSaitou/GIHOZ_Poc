@@ -1,6 +1,5 @@
 import argparse
 import json
-import os
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -34,6 +33,7 @@ def status_to_result(status: str) -> str:
     return "fail"
   if s == "running":
     return "fail"
+  return "fail"
 
 def get_batch_run(org: str, project: str, token: str, batch_run_number: int, *, errors: bool = False, note: bool = False) -> dict:
   url = f"https://app.magicpod.com/api/v1.0/{org}/{project}/batch-run/{batch_run_number}/"
@@ -52,39 +52,12 @@ def get_batch_run(org: str, project: str, token: str, batch_run_number: int, *, 
   r.raise_for_status()
   return r.json()
 
-def list_batch_runs(org: str, project: str, token: str) -> dict:
-  url = f"https://app.magicpod.com/api/v1.0/{org}/{project}/batch-runs/"
-  headers = {
-    "accept": "application/json",
-    "Authorization": f"Token {token}",
-  }
-  r = requests.get(url, headers=headers, timeout=60)
-  r.raise_for_status()
-  return r.json()
-
-def pick_latest_batch_run_number(list_json: dict):
-  runs = list_json.get("batch_runs") or []
-  if not runs:
-    return None
-
-  nums = []
-  for x in runs:
-    n = x.get("batch_run_number")
-  if isinstance(n, int):
-    nums.append(n)
-
-  if not nums:
-    return None
-
-  return max(nums)
-
 def main():
   ap = argparse.ArgumentParser()
   ap.add_argument("--org", required=True)
   ap.add_argument("--project", required=True)
   ap.add_argument("--token", required=True)
-  ap.add_argument("--batch-run-number",type=int, default=None)
-  ap.add_argument("--latest", action="store_true")
+  ap.add_argument("--batch-run-number", type=int, required=True)
 
   ap.add_argument("--test-officer", default="")
   ap.add_argument("--out", default="report.json")
@@ -93,26 +66,8 @@ def main():
 
   args = ap.parse_args()
 
-  target_number = None
-
-  if args.batch_run_number is not None:
-    target_number = args.batch_run_number
-  else:
-    if not args.latest:
-      raise RuntimeError("Specify  --batch-run-number or use --latest")
-
-    lst = list_batch_runs(args.org, args.project, args.token)
-    print("DEBUG list_batch_runs keys:", list(lst.keys()))
-    print("DEBUG batch_runs length:", len(lst.get("batch_runs") or []))
-    print("DEBUG first item:", (lst.get("batch_runs") or [None])[0])
-
-    target_number = pick_latest_batch_run_number(lst)
-
-  if target_number is None:
-    raise RuntimeError("target_number is None (latest selection failed)")
-
   data = get_batch_run(
-    args.org, args.project, args.token, target_number,
+    args.org, args.project, args.token, args.batch_run_number,
     errors=args.errors, note=args.note
   )
 
@@ -140,6 +95,7 @@ def main():
 
       result_value = status_to_result(res.get("status", ""))
 
+                                      
       item = {
         "test_case_name": tc_name,
         "test_officer": officer_default,
