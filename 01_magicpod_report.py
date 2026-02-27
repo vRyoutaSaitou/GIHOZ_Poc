@@ -79,7 +79,7 @@ def pick_latest_batch_run_number(list_json: dict) -> int:
       if isiinstance(n, int):
         nums.append(n)
 
-    if not nums
+    if not nums:
     return None
 
     return max(nums)
