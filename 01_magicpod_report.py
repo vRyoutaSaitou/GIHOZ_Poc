@@ -72,11 +72,17 @@ def list_batch_runs(org: str, project: str, token: str) -> dict:
 def pick_latest_batch_run_number(list_json: dict) -> int:
   runs = list_json.get("batch_runs") or []
   if not runs:
-    raise RuntimeError("No batch_runs found")
-    numbers = [x.get("batch_run_number") for x in runs if isinstance(x.get("batch_run_number"), int)]
-  if not numbers:
-    raise RuntimeError("batch_run_number not found in batch_runs")
-    return max(numbers)
+    return None
+    nums = []
+    for x in runs:
+      n = x.get("batch_run_number")
+      if isiinstance(n, int):
+        nums.append(n)
+
+    if not nums
+    return None
+
+    return max(nums)
 
 def main():
   ap = argparse.ArgumentParser()
@@ -101,6 +107,9 @@ def main():
     if not args.latest:
       raise RuntimeError("Specify  --batch-run-number or use --latest")
       lst = list_batch_runs(args.org, args.project, args.token)
+      print("DEBUG list_batch_runs keys:", list(lst.keys()))
+      print("DEBUG batch_runs length:", len(lst.get("batch_runs") or []))
+      print("DEBUG first item:", (lst.get("batch_runs") or [None])[0])
       target_number = pick_latest_batch_run_number(lst)
 
   if target_number is None:
