@@ -34,10 +34,9 @@ def status_to_result(status: str) -> str:
     return "fail"
   if s == "running":
     return "fail"
-    return "fail"
 
 def get_batch_run(org: str, project: str, token: str, batch_run_number: int, *, errors: bool = False, note: bool = False) -> dict:
-  url = f"https://app.magicpod.com/api/v1.0/{org}/{project}/batch-run/{batch_run_number}"
+  url = f"https://app.magicpod.com/api/v1.0/{org}/{project}/batch-run/{batch_run_number}/"
   headers = {
     "accept": "application/json",
     "Authorization":  f"Token {token}",
@@ -48,16 +47,10 @@ def get_batch_run(org: str, project: str, token: str, batch_run_number: int, *, 
     params["errors"] = "true"
   if note:
     params["note"] = "true"
-  
+
   r = requests.get(url, headers=headers, params=params, timeout=60)
   r.raise_for_status()
   return r.json()
-
-def build_batch_run_url(org: str, project: str, batch_run_number: int) -> str:
-  tepl = os.environ.get("MAGICPOD_BATCHRUN_URL_TEMPLATE", "")
-  if not tepl:
-    return ""
-    return tepl.format(org=org, project=project, batch_run_number=batch_run_number)
 
 def list_batch_runs(org: str, project: str, token: str) -> dict:
   url = f"https://app.magicpod.com/api/v1.0/{org}/{project}/batch-run/"
@@ -69,20 +62,21 @@ def list_batch_runs(org: str, project: str, token: str) -> dict:
   r.raise_for_status()
   return r.json()
 
-def pick_latest_batch_run_number(list_json: dict) -> int:
+def pick_latest_batch_run_number(list_json: dict):
   runs = list_json.get("batch_runs") or []
   if not runs:
     return None
-    nums = []
-    for x in runs:
-      n = x.get("batch_run_number")
-      if isiinstance(n, int):
-        nums.append(n)
 
-    if not nums:
-      return None
+  nums = []
+  for x in runs:
+    n = x.get("batch_run_number")
+  if isinstance(n, int):
+    nums.append(n)
 
-    return max(nums)
+  if not nums:
+    return None
+
+  return max(nums)
 
 def main():
   ap = argparse.ArgumentParser()
@@ -106,11 +100,13 @@ def main():
   else:
     if not args.latest:
       raise RuntimeError("Specify  --batch-run-number or use --latest")
-      lst = list_batch_runs(args.org, args.project, args.token)
-      print("DEBUG list_batch_runs keys:", list(lst.keys()))
-      print("DEBUG batch_runs length:", len(lst.get("batch_runs") or []))
-      print("DEBUG first item:", (lst.get("batch_runs") or [None])[0])
-      target_number = pick_latest_batch_run_number(lst)
+
+    lst = list_batch_runs(args.org, args.project, args.token)
+    print("DEBUG list_batch_runs keys:", list(lst.keys()))
+    print("DEBUG batch_runs length:", len(lst.get("batch_runs") or []))
+    print("DEBUG first item:", (lst.get("batch_runs") or [None])[0])
+
+    target_number = pick_latest_batch_run_number(lst)
 
   if target_number is None:
     raise RuntimeError("target_number is None (latest selection failed)")
@@ -118,7 +114,7 @@ def main():
   data = get_batch_run(
     args.org, args.project, args.token, target_number,
     errors=args.errors, note=args.note
-   )
+  )
 
   status = data.get("status")
   test_admin = data.get("executed_by", "")
