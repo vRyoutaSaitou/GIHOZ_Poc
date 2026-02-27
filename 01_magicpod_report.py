@@ -53,7 +53,7 @@ def get_batch_run(org: str, project: str, token: str, batch_run_number: int, *, 
   return r.json()
 
 def list_batch_runs(org: str, project: str, token: str) -> dict:
-  url = f"https://app.magicpod.com/api/v1.0/{org}/{project}/batch-run/"
+  url = f"https://app.magicpod.com/api/v1.0/{org}/{project}/batch-runs/"
   headers = {
     "accept": "application/json",
     "Authorization": f"Token {token}",
