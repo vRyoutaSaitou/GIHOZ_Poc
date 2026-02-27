@@ -101,8 +101,11 @@ def main():
       lst = list_batch_runs(args.org, args.project, args.token)
       target_number = pick_latest_batch_run_number(lst)
 
+  if target_number is None:
+    raise RuntimeError("target_number is None (latest selection failed)")
+
   data = get_batch_run(
-    args.org, args.project, args.token, args.batch_run_number,
+    args.org, args.project, args.token, target_number,
     errors=args.errors, note=args.note
    )
 
