@@ -49,7 +49,7 @@ def get_batch_run(org: str, project: str, token: str, batch_run_number: int, *, 
   if note:
     params["note"] = "true"
   
-  r = requests.get(url, headers=headers, timeout=60)
+  r = requests.get(url, headers=headers, params=params, timeout=60)
   r.raise_for_status()
   return r.json()
 
@@ -57,21 +57,48 @@ def build_batch_run_url(org: str, project: str, batch_run_number: int) -> str:
   tepl = os.environ.get("MAGICPOD_BATCHRUN_URL_TEMPLATE", "")
   if not tepl:
     return ""
-    return tmpl.format(org=org, project=project, batch_run_number=batch_run_number)
+    return tepl.format(org=org, project=project, batch_run_number=batch_run_number)
+
+def list_batch_runs(org: str, project: str, token: str) -> dict:
+  url = f"https://app.magicpod.com/api/v1.0/{org}/{project}/batch-run/"
+  headers = {
+    "accept": "application/json",
+    "Authorization": f"Token {token}",
+  }
+  r = requests.get(url, headers=headers, timeout=60)
+  r.raise_for_status()
+  return r.json()
+
+def pick_latest_batch_run_number(list_json: dict) -> int:
+  runs = list_json.get("batch_runs") or []
+  if not runs:
+    raise RuntimeError("No batch_runs found")
+    numbers = [x.get("batch_run_number") for x in runs if isinstance(x.get("batch_run_number"), int)
+  if not numbers
+    raise RuntimeError("batch_run_number not found in batch_runs")
+    return max(numbers)
 
 def main():
   ap = argparse.ArgumentParser()
   ap.add_argument("--org", required=True)
   ap.add_argument("--project", required=True)
   ap.add_argument("--token", required=True)
-  ap.add_argument("--batch-run-number",type=int, required=True)
-  ap.add_argument("--out", default="report.json")
+  ap.add_argument("--batch-run-number",type=int, default=None)
+  ap.add_argument("--latest", action="store_true")
 
   ap.add_argument("--test-officer", default="")
   ap.add_argument("--errors", action="store_true")
   ap.add_argument("--note", action="store_true")
 
   args = ap.parse_args()
+
+  if args.batch_run_numbers is not None
+    target_number = args.batch_run_number
+  else:
+    if not args.latest:
+      raise RuntimeError("Specify  --batch-run-number or use --latest")
+      lst = list_batch_runs(args.org, args.project, args.token)
+      target_number = pick_latest_batch_run_number(lst)
 
   data = get_batch_run(
     args.org, args.project, args.token, args.batch_run_number,
