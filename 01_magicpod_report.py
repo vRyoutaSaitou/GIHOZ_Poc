@@ -93,6 +93,8 @@ def main():
 
   args = ap.parse_args()
 
+  target_number = None
+
   if args.batch_run_number is not None:
     target_number = args.batch_run_number
   else:
