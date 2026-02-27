@@ -87,6 +87,7 @@ def main():
   ap.add_argument("--latest", action="store_true")
 
   ap.add_argument("--test-officer", default="")
+  ap.add_argument("--out", default="report.json")
   ap.add_argument("--errors", action="store_true")
   ap.add_argument("--note", action="store_true")
 
